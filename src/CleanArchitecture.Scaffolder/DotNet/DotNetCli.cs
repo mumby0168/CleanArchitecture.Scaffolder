@@ -13,6 +13,14 @@ public static class DotNetCli
             infoLogs ? log => AnsiConsole.MarkupLine($"[grey62]{log}[/]") : null,
             error => AnsiConsole.MarkupLine($"[red]{error}[/]"));
     
+    public static Process NewGlobalJson(string sdkVersion, string? directory = null, bool infoLogs = false) =>
+        ProcessExtensions.StartProcess(
+            "dotnet",
+            $"new globaljson --sdk-version {sdkVersion}",
+            directory,
+            infoLogs ? log => AnsiConsole.MarkupLine($"[grey62]{log}[/]") : null,
+            error => AnsiConsole.MarkupLine($"[red]{error}[/]"));
+    
     public static Process SlnAdd(string projectRelativePath, string? directory = null, bool infoLogs = false) =>
         ProcessExtensions.StartProcess(
             "dotnet",

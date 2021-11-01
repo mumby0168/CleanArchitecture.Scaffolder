@@ -1,6 +1,8 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using CleanArchitecture.Scaffolder.Constants;
 using CleanArchitecture.Scaffolder.DotNet;
+using CleanArchitecture.Scaffolder.Factories;
 using CleanArchitecture.Scaffolder.Models;
 using CleanArchitecture.Scaffolder.Settings;
 using Spectre.Console;
@@ -10,31 +12,25 @@ namespace CleanArchitecture.Scaffolder.Commands;
 
 public class NewSolutionCommand : Command<NewSolutionSettings>
 {
+    private readonly SolutionStructureFactory _solutionStructureFactory = new();
+    private static readonly List<string> TestFrameworks = new() {"xunit", "mstest", "nunit"};
+
     public override int Execute([NotNull] CommandContext context, [NotNull] NewSolutionSettings settings)
     {
         var selected = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Please select a project type:")
-                .AddChoices(new []
-                {
-                    "clean-web",
-                    "clean-library"
-                })
+                .AddChoices(SolutionChoices.CleanWeb)
             );
 
         settings.Path ??= Directory.GetCurrentDirectory();
 
-        SolutionDetails? solutionDetails = null;
-
-        if (selected == "clean-web")
-        {
-            solutionDetails = CleanArchitectureWebProject.Create(settings.RootNamespace!);
-        }
+        SolutionDetails? solutionDetails = _solutionStructureFactory.GetForSelection(selected, settings.RootNamespace!);
 
         if (solutionDetails is null)
         {
-            AnsiConsole.MarkupLine("[red] The current template is not implemented");
-            return 0;
+            AnsiConsole.WriteLine($"[red]Project selection {selected} not found[/]");
+            return -1;
         }
 
         var rootWorkingDirectory = Path.Combine(Directory.GetCurrentDirectory(), settings.Path);
@@ -42,6 +38,16 @@ public class NewSolutionCommand : Command<NewSolutionSettings>
         AnsiConsole.Status()
             .Start($"Creating your {selected} project ", ctx => 
             {
+                if (settings.SdkVersion is not null)
+                {
+                    AnsiConsole.WriteLine("");
+                    AnsiConsole.Write(new Rule($"Setting Sdk Version ({settings.SdkVersion})") {Alignment = Justify.Left});
+                    AnsiConsole.WriteLine("");
+
+                    DotNetCli.NewGlobalJson(settings.SdkVersion, rootWorkingDirectory);
+                    AnsiConsole.MarkupLine("[aqua]Successfully created global.json file[/]");
+                }
+                
                 AnsiConsole.WriteLine("");
                 CreateSolutionFile(settings, rootWorkingDirectory);
                 AnsiConsole.WriteLine("");
@@ -174,7 +180,12 @@ public class NewSolutionCommand : Command<NewSolutionSettings>
         {
             return ValidationResult.Error($"{settings.Path} is not a relative or absolute path");
         }
-        
+
+        if (TestFrameworks.Contains(settings.TestFramework) is false)
+        {
+            return ValidationResult.Error($"{settings.TestFramework} is not a valid test framework please select one of the following {string.Join(',', TestFrameworks)}");
+        }
+
         return base.Validate(context, settings);
     }
 }

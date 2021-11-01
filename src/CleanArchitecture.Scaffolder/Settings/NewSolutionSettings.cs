@@ -12,6 +12,10 @@ public class NewSolutionSettings : CommandSettings
     
     [CommandArgument(0, "[path]")]
     public string? Path { get; set; }
+
+    [CommandOption("--test-framework")] 
+    public string TestFramework { get; set; } = "xunit";
     
-    
+    [CommandOption("--sdk-version")]
+    public string? SdkVersion { get; set; }
 }
