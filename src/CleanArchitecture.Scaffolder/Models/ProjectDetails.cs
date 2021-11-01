@@ -8,7 +8,23 @@ public class ProjectDetails
 
     public string? RelativeDirectory { get; set; }
 
-    public List<string> PackagesToInstall { get; set; } = new();
+    public List<ProjectNugetReference> ProjectNugetReferences { get; set; } = new();
 
-    public List<string> ProjectReferences { get; set; } = new();
+    public List<ProjectReference> ProjectReferences { get; set; } = new();
+
+    public string GetFullDirectoryPath(string rootDirectory)
+    {
+        string projectPath = Path.Combine(rootDirectory, Name);
+
+        if (RelativeDirectory is not null)
+        {
+            projectPath = Path.Combine(rootDirectory, Path.Combine(RelativeDirectory, Name));
+        }
+
+        return projectPath;
+    }
 }
+
+public record ProjectReference(string Name, string? RelativePath = null);
+
+public record ProjectNugetReference(string Name, string? Version = null);
