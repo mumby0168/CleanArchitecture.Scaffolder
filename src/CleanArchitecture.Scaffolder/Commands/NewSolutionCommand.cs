@@ -181,11 +181,6 @@ public class NewSolutionCommand : Command<NewSolutionSettings>
             return ValidationResult.Error($"{settings.Path} is not a relative or absolute path");
         }
 
-        if (TestFrameworks.Contains(settings.TestFramework) is false)
-        {
-            return ValidationResult.Error($"{settings.TestFramework} is not a valid test framework please select one of the following {string.Join(',', TestFrameworks)}");
-        }
-
         return base.Validate(context, settings);
     }
 }
