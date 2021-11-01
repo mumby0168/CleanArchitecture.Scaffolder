@@ -42,48 +42,62 @@ public class NewSolutionCommand : Command<NewSolutionSettings>
         AnsiConsole.Status()
             .Start($"Creating your {selected} project ", ctx => 
             {
-                AnsiConsole.MarkupLine($"[aqua]Creating[/] [aqua bold]sln[/]  [aqua underline]{settings.RootNamespace}.sln[/]");
+                CreateSolutionFile(settings, rootWorkingDirectory);
 
-                DotNetCli.New(settings.RootNamespace!, "sln", rootWorkingDirectory, settings.DotnetLogs).WaitForExit();
-
-                foreach (var project in solutionDetails.ProjectDetails)
-                {
-                    string directoryToUse = settings.Path;
-
-                    if (project.RelativeDirectory is not null)
-                    {
-                        directoryToUse = Path.Combine(directoryToUse, project.RelativeDirectory);
-                    }
-
-                    string fullDirectory = Path.Combine(Directory.GetCurrentDirectory(), directoryToUse);
-
-                    if (Directory.Exists(fullDirectory) is false)
-                    {
-                        Directory.CreateDirectory(fullDirectory);
-                    }
-            
-                    AnsiConsole.MarkupLine($"[aqua]Creating project[/] [aqua underline]{project.Name}[/] [aqua bold]({project.Template})[/] ");
-
-                    DotNetCli.New(project.Name, project.Template, fullDirectory, settings.DotnetLogs).WaitForExit();
-                }
-
-
-                AnsiConsole.MarkupLine($"[aqua]Adding ({solutionDetails.ProjectDetails.Count}) projects to solution[/]");
+                CreateProjects(settings, solutionDetails);
                 
-                foreach (var projectDetail in solutionDetails.ProjectDetails)
-                {
-                    string addPath = projectDetail.Name;
-
-                    if (projectDetail.RelativeDirectory is not null)
-                    {
-                        addPath = Path.Combine(projectDetail.RelativeDirectory, addPath);
-                    }
-
-                    DotNetCli.SlnAdd(addPath, rootWorkingDirectory, settings.DotnetLogs).WaitForExit();
-                }
+                AddProjectsToSolution(settings, solutionDetails, rootWorkingDirectory);
             });
 
         return 0;
+    }
+
+    private static void AddProjectsToSolution(NewSolutionSettings settings, SolutionDetails solutionDetails, string rootWorkingDirectory)
+    {
+        AnsiConsole.MarkupLine($"[aqua]Adding ({solutionDetails.ProjectDetails.Count}) projects to solution[/]");
+
+        foreach (var projectDetail in solutionDetails.ProjectDetails)
+        {
+            string addPath = projectDetail.Name;
+
+            if (projectDetail.RelativeDirectory is not null)
+            {
+                addPath = Path.Combine(projectDetail.RelativeDirectory, addPath);
+            }
+
+            DotNetCli.SlnAdd(addPath, rootWorkingDirectory, settings.DotnetLogs).WaitForExit();
+        }
+    }
+
+    private static void CreateProjects(NewSolutionSettings settings, SolutionDetails solutionDetails)
+    {
+        foreach (var project in solutionDetails.ProjectDetails)
+        {
+            string directoryToUse = settings.Path;
+
+            if (project.RelativeDirectory is not null)
+            {
+                directoryToUse = Path.Combine(directoryToUse, project.RelativeDirectory);
+            }
+
+            string fullDirectory = Path.Combine(Directory.GetCurrentDirectory(), directoryToUse);
+
+            if (Directory.Exists(fullDirectory) is false)
+            {
+                Directory.CreateDirectory(fullDirectory);
+            }
+
+            AnsiConsole.MarkupLine($"[aqua]Creating project[/] [aqua underline]{project.Name}[/] [aqua bold]({project.Template})[/] ");
+
+            DotNetCli.New(project.Name, project.Template, fullDirectory, settings.DotnetLogs).WaitForExit();
+        }
+    }
+
+    private static void CreateSolutionFile(NewSolutionSettings settings, string rootWorkingDirectory)
+    {
+        AnsiConsole.MarkupLine($"[aqua]Creating[/] [aqua bold]sln[/]  [aqua underline]{settings.RootNamespace}.sln[/]");
+
+        DotNetCli.New(settings.RootNamespace!, "sln", rootWorkingDirectory, settings.DotnetLogs).WaitForExit();
     }
 
     public override ValidationResult Validate([NotNull] CommandContext context, [NotNull] NewSolutionSettings settings)
