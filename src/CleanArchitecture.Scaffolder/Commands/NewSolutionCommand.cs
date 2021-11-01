@@ -1,6 +1,7 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
 using CleanArchitecture.Scaffolder.DotNet;
+using CleanArchitecture.Scaffolder.Models;
 using CleanArchitecture.Scaffolder.Settings;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -21,7 +22,66 @@ public class NewSolutionCommand : Command<NewSolutionSettings>
                 })
             );
 
-        DotNetCli.New(settings.RootNamespace!, "console", settings.Path ?? Directory.GetCurrentDirectory()).WaitForExit();
+        settings.Path ??= Directory.GetCurrentDirectory();
+
+        SolutionDetails? solutionDetails = null;
+
+        if (selected == "clean-web")
+        {
+            solutionDetails = CleanArchitectureWebProject.Create(settings.RootNamespace!);
+        }
+
+        if (solutionDetails is null)
+        {
+            AnsiConsole.MarkupLine("[red] The current template is not implemented");
+            return 0;
+        }
+
+        var rootWorkingDirectory = Path.Combine(Directory.GetCurrentDirectory(), settings.Path);
+        
+        AnsiConsole.Status()
+            .Start($"Creating your {selected} project ", ctx => 
+            {
+                AnsiConsole.MarkupLine($"[aqua]Creating[/] [aqua bold]sln[/]  [aqua underline]{settings.RootNamespace}.sln[/]");
+
+                DotNetCli.New(settings.RootNamespace!, "sln", rootWorkingDirectory, settings.DotnetLogs).WaitForExit();
+
+                foreach (var project in solutionDetails.ProjectDetails)
+                {
+                    string directoryToUse = settings.Path;
+
+                    if (project.RelativeDirectory is not null)
+                    {
+                        directoryToUse = Path.Combine(directoryToUse, project.RelativeDirectory);
+                    }
+
+                    string fullDirectory = Path.Combine(Directory.GetCurrentDirectory(), directoryToUse);
+
+                    if (Directory.Exists(fullDirectory) is false)
+                    {
+                        Directory.CreateDirectory(fullDirectory);
+                    }
+            
+                    AnsiConsole.MarkupLine($"[aqua]Creating project[/] [aqua underline]{project.Name}[/] [aqua bold]({project.Template})[/] ");
+
+                    DotNetCli.New(project.Name, project.Template, fullDirectory, settings.DotnetLogs).WaitForExit();
+                }
+
+
+                AnsiConsole.MarkupLine($"[aqua]Adding ({solutionDetails.ProjectDetails.Count}) projects to solution[/]");
+                
+                foreach (var projectDetail in solutionDetails.ProjectDetails)
+                {
+                    string addPath = projectDetail.Name;
+
+                    if (projectDetail.RelativeDirectory is not null)
+                    {
+                        addPath = Path.Combine(projectDetail.RelativeDirectory, addPath);
+                    }
+
+                    DotNetCli.SlnAdd(addPath, rootWorkingDirectory, settings.DotnetLogs).WaitForExit();
+                }
+            });
 
         return 0;
     }
