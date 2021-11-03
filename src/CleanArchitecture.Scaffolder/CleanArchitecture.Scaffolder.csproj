@@ -13,7 +13,7 @@
     <Description>A tool to help generate .net project's by scaffolding a full solution</Description>
 
     <!-- NuGet settings -->
-    <PackageId>CleanArchitecture.Scaffolder</PackageId>
+    <PackageId>Mumby0168.CleanArchitecture.Scaffolder</PackageId>
     <PackageTags>Tool;Dotnet;Cli;Console;Tempaltes;csproj;sln</PackageTags>
     <PackageLicenseExpression>MIT</PackageLicenseExpression>
     <PackageProjectUrl>https://github.com/mumby0168/CleanArchitecture.Scaffolder</PackageProjectUrl>
