@@ -1,17 +1,17 @@
 using System.Diagnostics.CodeAnalysis;
-using System.Reflection;
 using System.Text.Json;
 using CleanArchitecture.Scaffolder.Constants;
 using CleanArchitecture.Scaffolder.DotNet;
 using CleanArchitecture.Scaffolder.Factories;
+using CleanArchitecture.Scaffolder.Json;
 using CleanArchitecture.Scaffolder.Models;
 using CleanArchitecture.Scaffolder.Settings;
 using Spectre.Console;
 using Spectre.Console.Cli;
 
-namespace CleanArchitecture.Scaffolder.Commands;
+namespace CleanArchitecture.Scaffolder.Commands.Solution;
 
-public class NewSolutionCommand : Command<NewSolutionSettings>
+public class SolutionNewCommand : Command<NewSolutionSettings>
 {
     private readonly SolutionStructureFactory _solutionStructureFactory = new();
     private static readonly List<string> TestFrameworks = new() {"xunit", "mstest", "nunit"};
@@ -29,11 +29,18 @@ public class NewSolutionCommand : Command<NewSolutionSettings>
 
         if (selected is "custom")
         {
-            var pathToJsonFile =
-                AnsiConsole.Prompt(new TextPrompt<string>("Please enter the path to the json template"));
-
-            var json = File.ReadAllText(pathToJsonFile);
-            solutionDetails = JsonSerializer.Deserialize<SolutionDetails>(json, new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
+            var pathToJsonFile = AnsiConsole.Prompt(new TextPrompt<string>("Please enter the path to the json template"));
+            AnsiConsole.WriteLine($"Reading file {pathToJsonFile}");
+            var json = File.ReadAllTextAsync(pathToJsonFile).Result;
+            AnsiConsole.WriteLine($"Reading JSON {pathToJsonFile}");
+            solutionDetails = JsonSerializer.Deserialize<SolutionDetails>(json, JsonDefaults.SerializerOptions);
+            solutionDetails.ProjectDetails.ForEach(x => x.Name = $"{settings.RootNamespace}.{x.Name}");
+            if (solutionDetails is null)
+            {
+                throw new Exception("No JSON data found");
+            }
+            
+            solutionDetails.RootNamespace = settings.RootNamespace ?? "";
         }
         else
         {
