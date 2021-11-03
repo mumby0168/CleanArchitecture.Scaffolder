@@ -1,5 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 using System.Reflection;
+using System.Text.Json;
 using CleanArchitecture.Scaffolder.Constants;
 using CleanArchitecture.Scaffolder.DotNet;
 using CleanArchitecture.Scaffolder.Factories;
@@ -21,11 +22,26 @@ public class NewSolutionCommand : Command<NewSolutionSettings>
             new SelectionPrompt<string>()
                 .Title("Please select a project type:")
                 .AddChoices(SolutionChoices.CleanWeb)
+                .AddChoices("custom")
             );
 
-        settings.Path ??= Directory.GetCurrentDirectory();
+        SolutionDetails? solutionDetails = null;
 
-        SolutionDetails? solutionDetails = _solutionStructureFactory.GetForSelection(selected, settings.RootNamespace!);
+        if (selected is "custom")
+        {
+            var pathToJsonFile =
+                AnsiConsole.Prompt(new TextPrompt<string>("Please enter the path to the json template"));
+
+            var json = File.ReadAllText(pathToJsonFile);
+            solutionDetails = JsonSerializer.Deserialize<SolutionDetails>(json, new JsonSerializerOptions {PropertyNameCaseInsensitive = true});
+        }
+        else
+        {
+            solutionDetails = _solutionStructureFactory.GetForSelection(selected, settings.RootNamespace!);
+        }
+        
+
+        settings.Path ??= Directory.GetCurrentDirectory();
 
         if (solutionDetails is null)
         {
