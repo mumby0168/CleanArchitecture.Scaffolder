@@ -29,6 +29,14 @@
 
   <ItemGroup>
     <None Include="icon.png" Pack="true" PackagePath="\" />
+    <None Include="templates\clean-architecture-with-packages.json" Pack="true" PackagePath="\" />
+    <None Include="templates\clean-architecture-web.json" Pack="true" PackagePath="\" />
+    <None Update="templates\clean-architecture-web.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="templates\clean-architecture-with-packages.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>

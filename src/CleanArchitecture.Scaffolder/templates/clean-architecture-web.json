@@ -1,0 +1,99 @@
+{
+  "projectDetails": [
+    {
+      "template": "classlib",
+      "name": "Domain",
+      "relativeDirectory": "src",
+      "projectNugetReferences": [],
+      "projectReferences": []
+    },
+    {
+      "template": "classlib",
+      "name": "Application",
+      "relativeDirectory": "src",
+      "projectNugetReferences": [],
+      "projectReferences": [
+        {
+          "name": "Domain",
+          "relativePath": "src"
+        }
+      ]
+    },
+    {
+      "template": "classlib",
+      "name": "Infrastructure",
+      "relativeDirectory": "src",
+      "projectNugetReferences": [],
+      "projectReferences": [
+        {
+          "name": "Application",
+          "relativePath": "src"
+        }
+      ]
+    },
+    {
+      "template": "web",
+      "name": "Web",
+      "relativeDirectory": "src",
+      "projectNugetReferences": [],
+      "projectReferences": [
+        {
+          "name": "Application",
+          "relativePath": "src"
+        },
+        {
+          "name": "Infrastructure",
+          "relativePath": "src"
+        }
+      ]
+    },
+    {
+      "template": "xunit",
+      "name": "Domain.Tests",
+      "relativeDirectory": "tests",
+      "projectNugetReferences": [],
+      "projectReferences": [
+        {
+          "name": "Domain",
+          "relativePath": "src"
+        }
+      ]
+    },
+    {
+      "template": "xunit",
+      "name": "Application.Tests",
+      "relativeDirectory": "tests",
+      "projectNugetReferences": [],
+      "projectReferences": [
+        {
+          "name": "Application",
+          "relativePath": "src"
+        }
+      ]
+    },
+    {
+      "template": "xunit",
+      "name": "Infrastructure.Tests",
+      "relativeDirectory": "tests",
+      "projectNugetReferences": [],
+      "projectReferences": [
+        {
+          "name": "Infrastructure",
+          "relativePath": "src"
+        }
+      ]
+    },
+    {
+      "template": "xunit",
+      "name": "Web.Tests",
+      "relativeDirectory": "tests",
+      "projectNugetReferences": [],
+      "projectReferences": [
+        {
+          "name": "Web",
+          "relativePath": "src"
+        }
+      ]
+    }
+  ]
+}

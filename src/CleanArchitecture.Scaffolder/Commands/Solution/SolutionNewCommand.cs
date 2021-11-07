@@ -5,6 +5,7 @@ using CleanArchitecture.Scaffolder.DotNet;
 using CleanArchitecture.Scaffolder.Factories;
 using CleanArchitecture.Scaffolder.Json;
 using CleanArchitecture.Scaffolder.Models;
+using CleanArchitecture.Scaffolder.Providers;
 using CleanArchitecture.Scaffolder.Settings;
 using Spectre.Console;
 using Spectre.Console.Cli;
@@ -15,14 +16,14 @@ public class SolutionNewCommand : Command<NewSolutionSettings>
 {
     private readonly SolutionStructureFactory _solutionStructureFactory = new();
     private static readonly List<string> TestFrameworks = new() {"xunit", "mstest", "nunit"};
+    private readonly TemplatesProvider _templatesProvider = new();
 
     public override int Execute([NotNull] CommandContext context, [NotNull] NewSolutionSettings settings)
     {
         var selected = AnsiConsole.Prompt(
             new SelectionPrompt<string>()
                 .Title("Please select a project type:")
-                .AddChoices(SolutionChoices.CleanWeb)
-                .AddChoices("custom")
+                .AddChoices(_templatesProvider.GetTemplateNames())
             );
 
         SolutionDetails? solutionDetails = null;
@@ -34,7 +35,7 @@ public class SolutionNewCommand : Command<NewSolutionSettings>
             var json = File.ReadAllTextAsync(pathToJsonFile).Result;
             AnsiConsole.WriteLine($"Reading JSON {pathToJsonFile}");
             solutionDetails = JsonSerializer.Deserialize<SolutionDetails>(json, JsonDefaults.SerializerOptions);
-            solutionDetails.ProjectDetails.ForEach(x => x.Name = $"{settings.RootNamespace}.{x.Name}");
+            solutionDetails!.ProjectDetails.ForEach(x => x.Name = $"{settings.RootNamespace}.{x.Name}");
             if (solutionDetails is null)
             {
                 throw new Exception("No JSON data found");
@@ -44,10 +45,11 @@ public class SolutionNewCommand : Command<NewSolutionSettings>
         }
         else
         {
-            solutionDetails = _solutionStructureFactory.GetForSelection(selected, settings.RootNamespace!);
+            solutionDetails = _templatesProvider.GetTemplate(selected);
         }
         
-
+        AnsiConsole.WriteLine(solutionDetails!.ProjectDetails.Count);
+        
         settings.Path ??= Directory.GetCurrentDirectory();
 
         if (solutionDetails is null)

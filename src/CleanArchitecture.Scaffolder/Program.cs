@@ -8,16 +8,18 @@ var app = new CommandApp();
 
 app.Configure(config =>
 {
-    config.AddBranch("solution", configurator =>
-    {
-        configurator.AddCommand<SolutionNewCommand>("new")
-            .WithDescription("Creates a new clean architecture solution");
-    });
+    config.AddCommand<SolutionNewCommand>("new")
+        .WithDescription("Creates a new clean architecture solution");
     
-    config.AddBranch("template", configurator =>
+    
+    
+    config.AddBranch("templates", configurator =>
     {
         configurator.AddCommand<TemplateSampleCommand>("sample")
             .WithDescription("Generates a json sample of a given template");
+
+        configurator.AddCommand<TemplateSaveCommand>("save")
+            .WithDescription("Save a template for use with the tool.");
     });
 });
 
