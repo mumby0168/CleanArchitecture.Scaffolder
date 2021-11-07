@@ -48,8 +48,6 @@ public class TemplatesProvider
         }
 
         var json = File.ReadAllText(path);
-        
-        AnsiConsole.WriteLine(json);
 
         return JsonSerializer.Deserialize<SolutionDetails>(json, JsonDefaults.SerializerOptions);
     }

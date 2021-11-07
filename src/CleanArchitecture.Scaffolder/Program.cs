@@ -1,4 +1,5 @@
-﻿using CleanArchitecture.Scaffolder.Commands;
+﻿using System.Runtime.Serialization.Json;
+using CleanArchitecture.Scaffolder.Commands;
 using CleanArchitecture.Scaffolder.Commands.Solution;
 using CleanArchitecture.Scaffolder.Commands.Template;
 using CleanArchitecture.Scaffolder.Settings;
@@ -8,11 +9,12 @@ var app = new CommandApp();
 
 app.Configure(config =>
 {
+    config.Settings.ApplicationName = "dnsg";
+
     config.AddCommand<SolutionNewCommand>("new")
         .WithDescription("Creates a new clean architecture solution");
-    
-    
-    
+
+
     config.AddBranch("templates", configurator =>
     {
         configurator.AddCommand<TemplateSampleCommand>("sample")

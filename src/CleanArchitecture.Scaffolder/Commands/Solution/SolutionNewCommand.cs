@@ -47,9 +47,7 @@ public class SolutionNewCommand : Command<NewSolutionSettings>
         {
             solutionDetails = _templatesProvider.GetTemplate(selected);
         }
-        
-        AnsiConsole.WriteLine(solutionDetails!.ProjectDetails.Count);
-        
+
         settings.Path ??= Directory.GetCurrentDirectory();
 
         if (solutionDetails is null)
