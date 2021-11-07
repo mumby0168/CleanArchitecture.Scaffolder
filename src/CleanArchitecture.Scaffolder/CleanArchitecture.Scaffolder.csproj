@@ -6,7 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <PackAsTool>true</PackAsTool>
-    <ToolCommandName>sln-generator</ToolCommandName>
+    <ToolCommandName>dnsg</ToolCommandName>
     <Authors>Billy Mumby</Authors>
     <Copyright>Copyright 2021 (c) Billy Mumby. All rights reserved.</Copyright>
 
