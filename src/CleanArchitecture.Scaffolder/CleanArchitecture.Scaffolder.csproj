@@ -1,42 +1,44 @@
 <Project Sdk="Microsoft.NET.Sdk">
 
-  <PropertyGroup>
-    <OutputType>Exe</OutputType>
-    <TargetFramework>net6.0</TargetFramework>
-    <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>enable</Nullable>
-    <PackAsTool>true</PackAsTool>
-    <ToolCommandName>dnsg</ToolCommandName>
-    <Authors>Billy Mumby</Authors>
-    <Copyright>Copyright 2021 (c) Billy Mumby. All rights reserved.</Copyright>
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net6.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <PackAsTool>true</PackAsTool>
+        <ToolCommandName>dnsg</ToolCommandName>
+        <Authors>Billy Mumby</Authors>
+        <Copyright>Copyright 2021 (c) Billy Mumby. All rights reserved.</Copyright>
 
-    <Description>A tool to help generate .net project's by scaffolding a full solution</Description>
+        <Description>A tool to help generate .net project's by scaffolding a full solution</Description>
 
-    <!-- NuGet settings -->
-    <PackageId>Mumby0168.CleanArchitecture.Scaffolder</PackageId>
-    <PackageTags>Tool;Dotnet;Cli;Console;Tempaltes;csproj;sln</PackageTags>
-    <PackageLicenseExpression>MIT</PackageLicenseExpression>
-    <PackageProjectUrl>https://github.com/mumby0168/CleanArchitecture.Scaffolder</PackageProjectUrl>
-    <PackageIcon>icon.png</PackageIcon>
-    <RepositoryType>git</RepositoryType>
-    <RepositoryUrl>https://github.com/mumby0168/CleanArchitecture.Scaffolder</RepositoryUrl>
-  </PropertyGroup>
+        <!-- NuGet settings -->
+        <PackageId>Mumby0168.CleanArchitecture.Scaffolder</PackageId>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
+        <PackageTags>Tool;Dotnet;Cli;Console;Tempaltes;csproj;sln</PackageTags>
+        <PackageLicenseExpression>MIT</PackageLicenseExpression>
+        <PackageProjectUrl>https://github.com/mumby0168/CleanArchitecture.Scaffolder</PackageProjectUrl>
+        <PackageIcon>icon.png</PackageIcon>
+        <RepositoryType>git</RepositoryType>
+        <RepositoryUrl>https://github.com/mumby0168/CleanArchitecture.Scaffolder</RepositoryUrl>
+    </PropertyGroup>
 
 
-  <ItemGroup>
-    <PackageReference Include="Spectre.Console" Version="0.42.0" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <None Include="icon.png" Pack="true" PackagePath="\" />
-    <None Include="templates\clean-architecture-with-packages.json" Pack="true" PackagePath="\" />
-    <None Include="templates\clean-architecture-web.json" Pack="true" PackagePath="\" />
-    <None Update="templates\clean-architecture-web.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-    <None Update="templates\clean-architecture-with-packages.json">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
-  </ItemGroup>
+    <ItemGroup>
+        <PackageReference Include="Spectre.Console" Version="0.42.0"/>
+    </ItemGroup>
+    
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\"/>
+        <None Include="icon.png" Pack="true" PackagePath="\"/>
+        <None Include="templates\clean-architecture-with-packages.json" Pack="true" PackagePath="\"/>
+        <None Include="templates\clean-architecture-web.json" Pack="true" PackagePath="\"/>
+        <None Update="templates\clean-architecture-web.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="templates\clean-architecture-with-packages.json">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
 </Project>

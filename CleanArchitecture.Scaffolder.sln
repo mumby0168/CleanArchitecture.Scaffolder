@@ -7,6 +7,16 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{C8C3D991-5D3
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CleanArchitecture.Scaffolder", "src\CleanArchitecture.Scaffolder\CleanArchitecture.Scaffolder.csproj", "{B115228F-A751-4D95-BED1-0C5BC30DBB6D}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "docs", "docs", "{3B1FE665-53B4-4206-B798-517B81E2F9FF}"
+	ProjectSection(SolutionItems) = preProject
+		README.md = README.md
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "builds", "builds", "{2CEC2ECA-2F5E-49F7-9D0D-4F70AE19D8CE}"
+	ProjectSection(SolutionItems) = preProject
+		.github\workflows\nuget-release.yml = .github\workflows\nuget-release.yml
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
