@@ -35,7 +35,7 @@ public class SolutionNewCommand : Command<NewSolutionSettings>
             var json = File.ReadAllTextAsync(pathToJsonFile).Result;
             AnsiConsole.WriteLine($"Reading JSON {pathToJsonFile}");
             solutionDetails = JsonSerializer.Deserialize<SolutionDetails>(json, JsonDefaults.SerializerOptions);
-            solutionDetails!.ProjectDetails.ForEach(x => x.Name = $"{settings.RootNamespace}.{x.Name}");
+            solutionDetails!.SetRootNamespace(settings.RootNamespace!);
             if (solutionDetails is null)
             {
                 throw new Exception("No JSON data found");
@@ -46,6 +46,7 @@ public class SolutionNewCommand : Command<NewSolutionSettings>
         else
         {
             solutionDetails = _templatesProvider.GetTemplate(selected);
+            solutionDetails!.SetRootNamespace(settings.RootNamespace!);
         }
 
         settings.Path ??= Directory.GetCurrentDirectory();

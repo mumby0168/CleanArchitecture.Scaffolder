@@ -8,4 +8,7 @@ public class SolutionDetails
     public string RootNamespace { get; set; } = "UndefinedNamespace";
 
     public List<ProjectDetails> ProjectDetails { get; set; } = new();
+
+    public void SetRootNamespace(string rootNamespace) => 
+        ProjectDetails.ForEach(x => x.Name = $"{rootNamespace}.{x.Name}");
 }
